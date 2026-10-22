@@ -16,7 +16,7 @@ const rangos = {
 let catalogoFiguras = [];
 let figurasDelDia = []; // Almacenará solo la selección actual
 
-let cartonLlenoFigura = [];
+let cartonLlenoFigura = []; // Almacenará los cartones ganadores por figura o llena
 
 function mostrarAlerta(titulo, mensaje, tipo) {
 
@@ -63,7 +63,7 @@ $(document).ready(function () {
             swal("Error", "No se pudo cargar el catálogo de figuras.", "error");
         });
 
-    //cargarCartonesPruebaUno();
+    cargarCartonesPrueba();
 });
 
 // --- 1. FUNCIÓN PARA GENERAR EL TABLERO MAESTRO ---
@@ -131,7 +131,10 @@ $('#btnGuardarConfiguracion').on('click', function () {
 
     // Cerramos el modal
     $('#modalConfigurarFiguras').modal('hide');
-    swal("¡Listo!", "Panel de jugadas actualizado para hoy.", "success");
+
+    MensajeToast("¡Listo!", "Jugadas agregadas.", "success");
+
+    //swal("¡Listo!", "Panel de jugadas actualizado para hoy.", "success");
 });
 
 function cargarCheckboxesPantallaPrincipal() {
@@ -139,7 +142,6 @@ function cargarCheckboxesPantallaPrincipal() {
     let html = '';
 
     figurasDelDia.forEach((figura) => {
-        // Misma cuadrícula responsiva que el modal <div class="col-6 col-sm-4 col-md-3 mb-2">
         html += `
         <div class="col-6 col-md-4 mb-2">
             <div class="form-check">
@@ -158,10 +160,11 @@ function cargarCheckboxesPantallaPrincipal() {
     }
 }
 
-// registro de cartones
+// podria mejorar si validamos numeros por columna ingresado con rangos[]
+// ya que por error en la primera columna de B puedan ingresar 30
+// por error el cual no exites en la columna B o por error podrian ingresar 99 en vez de 9
 function registrarCarton() {
     let id = document.getElementById("cartonId").value.trim();
-    //let id = $("#cartonId").val().trim();
     let numeros = document.getElementById("numerosCarton").value.trim().split(",").map(n => n.trim());
 
     if (numeros.length !== 24) {
@@ -237,6 +240,7 @@ function verCartonesBtn() {
     });
 }
 
+// verificar si en esta funcion llamamos a mostrarTodosGanadores();
 function quitarCarton(IdCarton) {
     // confirmación antes de borrar
     swal({
@@ -265,7 +269,7 @@ $(document).on("click", "#listaCartonesBtn .btn-quitar", function () {
 });
 
 // --- FUNCIÓN EXCLUSIVA PARA PRUEBAS ---
-function cargarCartonesPruebaUno() {
+function cargarCartonesPrueba() {
     // Tu lista predefinida de cartones
     const datosPrueba = [
         { id: "7345", numeros: "15,13,2,14,6,24,27,28,30,26,31,40,38,39,58,57,54,52,56,68,72,67,62,73" },
@@ -372,7 +376,6 @@ function verificarJugadas(cartones, numCantado) {
     });
 
     if (figurasSeleccionadas.length === 0) return resultados; // Retornamos arreglo vacío
-    //if (figurasSeleccionadas.length === 0) return;
 
     cartones.forEach(carton => {
         let jugadasGanadas = [];
@@ -402,7 +405,7 @@ function verificarJugadas(cartones, numCantado) {
     return resultados; // Retornamos los datos para usarlos fuera
 }
 
-// --- 2. NUEVA FUNCIÓN PARA CANTAR EL NÚMERO CON UN CLIC ---
+// FUNCIÓN PARA CANTAR EL NÚMERO CON UN CLIC ---
 function cantarNumeroTablero(col, num) {
     if (cartones.length === 0) {
         swal("Mensaje", "⚠️ No hay Cartones para Jugar.", "warning");
@@ -429,7 +432,6 @@ function cantarNumeroTablero(col, num) {
         // Casilla del centro libre siempre marcada
         if (!carton.marcados.includes(null)) carton.marcados.push(null);
 
-        // let carrito = JSON.parse(localStorage.getItem("carritoTiendaEddy")) || [];
         // Verificar cartón lleno nuevo agregar a cartonLlenoFigura = [];
         let totalMarcados = carton.marcados.filter(n => n !== null).length;
         if (totalMarcados >= 24) {
@@ -443,7 +445,6 @@ function cantarNumeroTablero(col, num) {
                 jugadas: "Cartón Lleno",
                 numeroVictoria: num
             });
-            //cartonLlenoFigura.push({ id: carton.id, tipoGanador: "lleno", jugadas: "Cartón Lleno" });
         }
     });
 
@@ -516,7 +517,6 @@ function mostrarTodosGanadores() {
     }
 }
 
-// --- 3. ACTUALIZAR FUNCIÓN DE DESHACER ---
 function volverAtras() {
     if (historial.length === 0) {
         swal("Advertencia", "⚠️ No hay números para deshacer.", "warning");
@@ -582,25 +582,35 @@ $('#btnAtras').on('click', function () {
 
 function reiniciarCarton() {
 
-    cartonLlenoFigura = [];
-    mostrarTodosGanadores();
+    swal({
+        title: "¿Estás seguro?",
+        text: "🔄 Se riniciara para un nuevo juego limpiando los cartones marcados.",
+        icon: "info",
+        buttons: ["Cancelar", "Sí, reiniciar"],
+        dangerMode: true,
+    }).then((confirmado) => {
+        if (confirmado) {
 
-    // Limpiar las marcas de cada cartón
-    cartones.forEach(carton => {
-        carton.marcados = []; // Vacía los números marcados
-        carton.ganador = false; // también reiniciamos el estado de ganador
+            cartonLlenoFigura = [];
+            mostrarTodosGanadores();
+
+            // Limpiar las marcas de cada cartón
+            cartones.forEach(carton => {
+                carton.marcados = []; // Vacía los números marcados
+                carton.ganador = false; // también reiniciamos el estado de ganador
+            });
+
+            // Limpiar historial de números cantados
+            historial = [];
+
+            // Limpiar TODAS las bolas marcadas en el tablero
+            $('.btn-bola').removeClass('cantada');
+
+            // Actualizar la vista
+            mostrarCartones();
+            swal("Mensaje", "🔄 Juego reiniciado. Puedes volver a jugar con los mismos cartones.", "warning");
+        }
     });
-
-    // Limpiar historial de números cantados
-    historial = [];
-
-    // Limpiar TODAS las bolas marcadas en el tablero
-    $('.btn-bola').removeClass('cantada');
-
-    // Actualizar la vista
-    mostrarCartones();
-
-    swal("Mensaje", "🔄 Juego reiniciado. Puedes volver a jugar con los mismos cartones.", "warning");
 }
 
 $('#btnNuevoJuego').on('click', function () {
