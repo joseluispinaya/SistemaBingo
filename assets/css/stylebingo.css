@@ -1,0 +1,157 @@
+.carton {
+    display: inline-block;
+    margin: 6px; /* Redujimos el margen exterior */
+    background-color: #fff;
+    border-radius: 6px; /* Borde un poco más sutil */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra más delicada proporcional al tamaño */
+    overflow: hidden;
+    border: 1px solid #e2e7eb;
+    vertical-align: top; /* Asegura que todos se alineen arriba correctamente */
+}
+
+/* Estilizamos el título del cartón (El ID) */
+.carton h6 {
+    background-color: #2d353c;
+    color: white;
+    margin: 0;
+    padding: 5px 0; /* Menos espacio arriba y abajo */
+    font-weight: bold;
+    font-size: 12px; /* Letra más pequeña para el título */
+}
+
+/* Estilos para la tabla del cartón */
+.carton table {
+    border-collapse: collapse;
+    margin: 0;
+    width: 100%;
+}
+
+.carton table,
+.carton th,
+.carton td {
+    border: 1px solid #e2e7eb;
+    text-align: center;
+}
+
+/* Cabecera B I N G O */
+.carton th {
+    background-color: #f0f4f7;
+    padding: 3px 5px; /* Espacio interior muy reducido */
+    font-weight: bold;
+    font-size: 12px; /* Letra reducida */
+    color: #242b30;
+}
+
+/* Celdas de los números */
+.carton td {
+    padding: 3px 4px; /* Espacio interior mínimo para ahorrar ancho */
+    font-size: 12px; /* Tamaño de número adecuado para celdas pequeñas */
+    width: 28px; /* Ancho fijo drásticamente reducido (antes era 40px) */
+    height: 28px; /* Alto fijo reducido */
+    transition: all 0.2s ease-in-out;
+}
+
+/* El estilo de la celda marcada */
+.carton td.marked {
+    background-color: #00acac;
+    color: white;
+    font-weight: bold;
+    transform: scale(0.92); /* Ajuste del efecto de "botón presionado" al nuevo tamaño */
+    border-radius: 3px; /* Borde interior un poco más pequeño */
+}
+
+/* Asegurar que el icono de estrella del centro se adapte */
+.carton td i.fa-star {
+    font-size: 11px; /* Estrella más pequeña para que no deforme la celda */
+}
+
+/* ========================================================
+   ESTILOS PARA EL TABLERO DE CONTROL MAESTRO (75 Números)
+   ======================================================== */
+   
+.tablero-maestro {
+    background-color: #242b30;
+    /* Quitamos el padding-top para que la cabecera fije perfectamente arriba */
+    padding: 0 10px 10px 10px; 
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    display: inline-block;
+    
+    /* MAGIA DEL SCROLL */
+    max-height: 480px; /* Altura máxima para forzar el scroll interno */
+    overflow-y: auto;
+}
+
+/* Estilo para que la barra de scroll se vea fina y moderna (Chrome/Edge/Safari) */
+.tablero-maestro::-webkit-scrollbar {
+    width: 6px;
+}
+.tablero-maestro::-webkit-scrollbar-thumb {
+    background-color: #00acac; /* Verde de Color Admin */
+    border-radius: 10px;
+}
+.tablero-maestro::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tablero-maestro table {
+    border-collapse: separate;
+    border-spacing: 6px;
+    /* border-spacing: 4px; */
+    margin: 0;
+}
+
+.tablero-maestro th {
+    color: #ffeb3b; /* Amarillo característico del bingo */
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    
+    /* MAGIA PARA FIJAR LA CABECERA */
+    padding-top: 10px; /* Restauramos el padding superior aquí */
+    padding-bottom: 8px;
+    background-color: #242b30; /* Debe ser sólido (no transparente) para tapar los números al subir */
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Asegura que la cabecera pase por encima de las bolas */
+}
+
+.tablero-maestro td {
+    padding: 0;
+    border: none;
+}
+
+/* Bolas de Bingo clickeables */
+.btn-bola {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    font-size: 13px;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+    box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-bola:hover {
+    background-color: #e2e7eb;
+    transform: scale(1.1);
+}
+
+/* Estado de Bola Cantada (Marcada) */
+.btn-bola.cantada {
+    background-color: #00acac !important; /* Verde Color Admin */
+    color: #fff !important;
+    border-color: #008a8a !important;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
+    opacity: 0.6;
+    pointer-events: none; /* Deshabilita el clic */
+    transform: scale(0.95);
+}

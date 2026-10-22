@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Sistema Bingo</title>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	
+	<!-- ================== BEGIN core-css ================== -->
+	<link href="assets/css/vendor.min.css" rel="stylesheet" />
+	<link href="assets/css/default/app.min.css" rel="stylesheet" />
+	<!-- ================== END core-css ================== -->
+
+    <link href="assets/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" />
+
+	<link href="assets/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="assets/css/stylebingo.css" rel="stylesheet">
+</head>
+<body>
+	<!-- BEGIN #loader -->
+	<div id="loader" class="app-loader">
+		<span class="spinner"></span>
+	</div>
+	<!-- END #loader -->
+
+	<!-- BEGIN #app -->
+	<div id="app" class="app app-header-fixed app-sidebar-fixed app-without-sidebar app-with-top-menu">
+		<!-- BEGIN #header -->
+		<div id="header" class="app-header">
+			<!-- BEGIN navbar-header -->
+			<div class="navbar-header">
+				<a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> <b class="me-3px">Zero</b> Byte</a>
+				<button type="button" class="navbar-mobile-toggler" data-toggle="app-top-menu-mobile">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<!-- END navbar-header -->
+			<!-- BEGIN header-nav -->
+			<div class="navbar-nav">
+				
+				<div class="navbar-item navbar-user dropdown">
+					<a href="#" class="navbar-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+						<img src="assets/img/user/user-13.jpg" alt="" /> 
+						<span>
+							<span class="d-none d-md-inline">Jose Luis</span>
+							<b class="caret"></b>
+						</span>
+					</a>
+					<div class="dropdown-menu dropdown-menu-end me-1">
+						<a href="javascript:;" class="dropdown-item">Mi Perfil</a>
+						<div class="dropdown-divider"></div>
+						<a href="javascript:;" class="dropdown-item">Salir</a>
+					</div>
+				</div>
+			</div>
+			<!-- END header-nav -->
+		</div>
+		<!-- END #header -->
+	
+		<!-- BEGIN #top-menu -->
+		<div id="top-menu" class="app-top-menu" data-bs-theme="dark">
+			<!-- BEGIN menu -->
+			<div class="menu">
+
+				<div class="menu-item">
+					<a href="index.html" class="menu-link">
+						<div class="menu-icon">
+							<i class="fab fa-simplybuilt"></i>
+						</div>
+						<div class="menu-text">Inicio</div>
+					</a>
+				</div>
+
+				<div class="menu-item has-sub">
+					<a href="javascript:;" class="menu-link">
+						<div class="menu-icon">
+							<i class="fa fa-envelope"></i>
+						</div>
+						<div class="menu-text">Tutorial</div>
+						<div class="menu-caret"></div>
+					</a>
+					<div class="menu-submenu">
+						<div class="menu-item">
+							<a href="#" class="menu-link">
+								<div class="menu-text">Crear figuras</div>
+							</a>
+						</div>
+						<div class="menu-item">
+							<a href="#" class="menu-link">
+								<div class="menu-text">Como jugar</div>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="menu-item">
+					<a href="bingo_imperial.html" class="menu-link">
+						<div class="menu-icon">
+							<i class="fa fa-calendar"></i> 
+						</div>
+						<div class="menu-text">Imperial</div>
+					</a>
+				</div>
+
+                <div class="menu-item active">
+					<a href="bingo_mejor.html" class="menu-link">
+						<div class="menu-icon">
+							<i class="fa fa-calendar"></i> 
+						</div>
+						<div class="menu-text">Imperial New</div>
+					</a>
+				</div>
+
+                <div class="menu-item">
+					<a href="crear_figura.html" class="menu-link">
+						<div class="menu-icon">
+							<i class="fa fa-calendar"></i> 
+						</div>
+						<div class="menu-text">Crear Figura</div>
+					</a>
+				</div>
+
+				<div class="menu-item menu-control menu-control-start">
+					<a href="javascript:;" class="menu-link" data-toggle="app-top-menu-prev"><i class="fa fa-angle-left"></i></a>
+				</div>
+				<div class="menu-item menu-control menu-control-end">
+					<a href="javascript:;" class="menu-link" data-toggle="app-top-menu-next"><i class="fa fa-angle-right"></i></a>
+				</div>
+			</div>
+			<!-- END menu -->
+		</div>
+		<!-- END #top-menu -->
+		
+		<!-- BEGIN #content -->
+		<div id="content" class="app-content">
+
+            <!-- <div class="row">
+                <div class="col-xl-12">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><i class="fa fa-ticket-alt me-2"></i>Registro de Cartones y Configuración</h4>
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-7">
+                                    <div class="mb-3 mb-md-0">
+                                        <label class="form-label" for="numerosCarton">Nros de Cartón (Por columnas B,I,N,G,O)</label>
+                                        <textarea class="form-control" id="numerosCarton" rows="2" placeholder="Ingrese los Números por columna y separados por comas"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label" for="cartonId">Código</label>
+                                    <input type="text" class="form-control" id="cartonId" placeholder="Cod Cartón">
+                                </div>
+                                <div class="col-md-2 mt-4 mt-md-0">
+                                    <button class="btn btn-outline-primary w-100 mt-md-4" type="button" id="btnAgregarCarton">Agregar Cartón</button>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <button type="button" class="btn btn-indigo btn-sm" data-bs-toggle="modal" data-bs-target="#modalConfigurarFiguras">
+                                        <i class="fa fa-cogs me-1"></i> Configurar Jugadas del Día
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="row">
+                <div class="col-xl-3">
+
+                    <!-- <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><i class="fa fa-star me-2"></i>Figuras para Jugar</h4>
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row" id="contenedorFiguras">
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- Panel Tablero de Control -->
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><i class="fa fa-bullhorn me-2"></i>Cantar Números</h4>
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="panel-body text-center p-2">
+                            
+                            <div class="d-flex justify-content-between mb-3 px-2">
+                                <button type="button" id="btnAtras" class="btn btn-danger btn-sm"><i class="fa fa-undo me-1"></i>Deshacer</button>
+                                <button type="button" id="btnNuevoJuego" class="btn btn-lime btn-sm"><i class="fa fa-sync me-1"></i>Reiniciar</button>
+                            </div>
+
+                            <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">Tablero de Control</h6>
+                            
+                            <!-- Aquí se inyectará la tabla dinámica con los 75 números -->
+                            <div id="tableroControlNumeros" class="d-flex justify-content-center"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-9">
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><i class="fa fa-ticket-alt me-2"></i>Registro de Cartones y Configuración</h4>
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-7">
+                                    <div class="mb-3 mb-md-0">
+                                        <label class="form-label" for="numerosCarton">Nros de Cartón (Por columnas B,I,N,G,O)</label>
+                                        <textarea class="form-control" id="numerosCarton" rows="2" placeholder="Ingrese los Números por columna y separados por comas"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label" for="cartonId">Código</label>
+                                    <input type="text" class="form-control" id="cartonId" placeholder="Cod Cartón">
+                                </div>
+                                <div class="col-md-2 mt-4 mt-md-0">
+                                    <button class="btn btn-outline-primary w-100 mt-md-4" type="button" id="btnAgregarCarton">Agregar Cartón</button>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <button type="button" class="btn btn-indigo btn-sm" data-bs-toggle="modal" data-bs-target="#modalConfigurarFiguras">
+                                        <i class="fa fa-cogs me-1"></i> Configurar Jugadas del Día
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><i class="fa fa-star me-2"></i>Figuras para Jugar y Ganadores</h4>
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row" id="contenedorFiguras">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <!-- Columna Cartones Llenos -->
+                                        <div class="col-md-5">
+                                            <h6 class="mb-2 fw-bold text-dark border-bottom pb-2">
+                                                <i class="fa fa-trophy text-warning me-1"></i>Cartones Llenos
+                                            </h6>
+                                            <!-- Contenedor con Scroll -->
+                                            <div data-scrollbar="true" data-height="180px" class="overflow-hidden pe-2">
+                                                <div id="contCartonesLlenos"></div>
+                                            </div>
+                                        </div>
+                        
+                                        <!-- Columna Figuras -->
+                                        <div class="col-md-7 border-start">
+                                            <h6 class="mb-2 fw-bold text-dark border-bottom pb-2">
+                                                <i class="fa fa-star text-theme me-1"></i>Cartones Figuras
+                                            </h6>
+                                            <!-- Contenedor con Scroll -->
+                                            <div data-scrollbar="true" data-height="180px" class="overflow-hidden pe-2">
+                                                <div id="contFigurasGanadas"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- panel cartones activos -->
+                    
+                    <div class="panel panel-inverse">
+                        <!-- <div class="panel-heading">
+                            <h4 class="panel-title"><i class="fa fa-th me-2"></i>Cartones Activos</h4>
+                        </div> -->
+                        <div class="panel-body bg-light">
+                        
+                            <div data-scrollbar="true" data-height="460px">
+                                <!-- Botones para eliminar cartones -->
+                                <div class="d-flex flex-wrap gap-2 mb-3" id="listaCartonesBtn"></div>
+                        
+                                <!-- Contenedor de Cartones de Bingo -->
+                                <div class="row mx-0">
+                                    <div class="col-xl-12 text-center">
+                                        <div id="cartones">
+                                            <p class="text-muted mt-3">Agrega cartones para comenzar a jugar.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+		</div>
+		
+		<!-- BEGIN theme-panel -->
+		<div class="theme-panel">
+			<a href="javascript:;" data-toggle="theme-panel-expand" class="theme-collapse-btn"><i class="fa fa-cog"></i></a>
+			<div class="theme-panel-content" data-scrollbar="true" data-height="100%">
+				<h5>App Settings</h5>
+				
+				<div class="row mt-10px">
+					<div class="col-8 control-label text-body fw-bold">
+						<div>Dark Mode <span class="badge bg-primary ms-1 py-2px position-relative" style="top: -1px;">NEW</span></div>
+						<div class="lh-14">
+							<small class="text-body opacity-50">
+								Adjust the appearance to reduce glare and give your eyes a break.
+							</small>
+						</div>
+					</div>
+					<div class="col-4 d-flex">
+						<div class="form-check form-switch ms-auto mb-0">
+							<input type="checkbox" class="form-check-input" name="app-theme-dark-mode" id="appThemeDarkMode" value="1" />
+							<label class="form-check-label" for="appThemeDarkMode">&nbsp;</label>
+						</div>
+					</div>
+				</div>
+				
+				<div class="theme-panel-divider"></div>
+				
+				<a href="javascript:;" class="btn btn-default d-block w-100 rounded-pill" data-toggle="reset-local-storage"><b>Reset Local Storage</b></a>
+			</div>
+		</div>
+		<!-- END theme-panel -->
+		<!-- BEGIN scroll-top-btn -->
+		<a href="javascript:;" class="btn btn-icon btn-circle btn-theme btn-scroll-to-top" data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
+		<!-- END scroll-top-btn -->
+	</div>
+	<!-- END #app -->
+
+    <div class="modal fade" id="modalConfigurarFiguras" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+    
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title fw-bold" id="exampleModalLabel">
+                        <i class="fas fa-list me-2"></i>Catálogo Completo de Figuras
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+    
+                <div class="modal-body bg-light">
+    
+                    <div class="alert alert-info py-2 px-3 mb-3 border-0 shadow-sm fs-12px">
+                        <i class="fa fa-info-circle me-1"></i>Selecciona las <strong>figuras</strong> que estarán
+                        disponibles para jugar.
+                    </div>
+    
+                    <!-- Aquí se inyecta el JSON completo -->
+                    <div class="row" id="contenedorModalFiguras"></div>
+    
+                </div>
+    
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-danger shadow-sm" data-bs-dismiss="modal">
+                        <i class="fa fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-indigo shadow-sm fw-bold" id="btnGuardarConfiguracion">
+                        <i class="fa fa-save me-1"></i>Guardar Menú
+                    </button>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+	
+	<!-- ================== BEGIN core-js ================== -->
+	<script src="assets/js/vendor.min.js"></script>
+	<script src="assets/js/app.min.js"></script>
+	<!-- ================== END core-js ================== -->
+
+    <script src="assets/plugins/gritter/js/jquery.gritter.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- <script src="assets/plugins/sweetalert/sweetalert.min.js"></script> -->
+
+    <script src="assets/plugins/toastr/toastr.min.js"></script>
+    <script src="assets/plugins/loadingoverlay/loadingoverlay.js"></script>
+    <script src="js/imperialmejor.js"></script>
+	
+</body>
+</html>

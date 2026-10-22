@@ -1,0 +1,64 @@
+
+
+/* ========================================================
+   ESTILOS PARA LOS CARTONES DE BINGO (Adaptado a Bootstrap 5)
+   ======================================================== */
+
+.carton {
+    display: inline-block;
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 8px; /* Bordes redondeados modernos */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Sombra suave para que resalte como tarjeta */
+    overflow: hidden; /* Mantiene los bordes redondeados limpios */
+    border: 1px solid #e2e7eb; /* Mismo color de borde que los paneles de Color Admin */
+}
+
+/* Estilizamos el título del cartón (El ID) */
+.carton h6 {
+    background-color: #2d353c; /* Color oscuro del header del panel de Color Admin */
+    color: white;
+    margin: 0;
+    padding: 8px 0;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Estilos para la tabla del cartón */
+.carton table {
+    border-collapse: collapse;
+    margin: 0; /* Quitamos el margen para que encaje perfecto en el contenedor */
+    width: 100%;
+}
+
+.carton table,
+.carton th,
+.carton td {
+    border: 1px solid #e2e7eb;
+    text-align: center;
+}
+
+.carton th {
+    background-color: #f0f4f7; /* Un gris muy sutil de Bootstrap */
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #242b30;
+}
+
+.carton td {
+    padding: 10px 12px;
+    font-size: 15px;
+    width: 40px; /* Tamaño fijo para que los números no deformen la tabla */
+    height: 40px;
+    transition: all 0.2s ease-in-out; /* Animación suave al marcarse */
+}
+
+/* El estilo de la celda marcada */
+.carton td.marked {
+    background-color: #00acac; /* Verde característico (btn-success) de Color Admin */
+    color: white;
+    font-weight: bold;
+    transform: scale(0.95); /* Pequeño efecto visual de que fue presionado */
+    border-radius: 4px;
+}
