@@ -12,41 +12,18 @@ const rangos = {
     O: [61, 75]
 };
 
-// Variable global que se llenará con los datos del JSON
-let catalogoFiguras = [];
+
+let catalogoFiguras = []; // Variable global que se llenará con los datos del JSON
 let figurasDelDia = []; // Almacenará solo la selección actual
 
 let cartonLlenoFigura = []; // Almacenará los cartones ganadores por figura o llena
 
-function mostrarAlerta(titulo, mensaje, tipo) {
-
-    let btnClass = 'btn-default';
-
-    // Asignamos el color del botón según el estilo de Color Admin
-    if (tipo === 'success') btnClass = 'btn-success';
-    else if (tipo === 'warning') btnClass = 'btn-warning';
-    else if (tipo === 'error') btnClass = 'btn-danger';
-    else if (tipo === 'info') btnClass = 'btn-info';
-
-    swal({
-        title: titulo,
-        text: mensaje,
-        icon: tipo,
-        closeOnClickOutside: false,
-        buttons: {
-            confirm: {
-                text: 'Aceptar',
-                value: true,
-                visible: true,
-                className: 'btn ' + btnClass, // Estilo Color Admin
-                closeModal: true
-            }
-        }
-    });
-}
-
 $(document).ready(function () {
     renderizarTableroMaestro();
+
+    // Recuperar estado previo (si existe) justo después de renderizar el tablero
+    cargarEstadoLocal();
+
     fetch('figuras.json')
         .then(response => {
             if (!response.ok) throw new Error("Error al cargar el archivo de figuras");
@@ -272,6 +249,7 @@ $('#btnRegistrarCarton').on("click", function () {
     // Actualizamos la vista
     mostrarCartones();
     verCartonesBtn();
+    guardarEstadoLocal(); // <-- AGREGAR AQUÍ
     
     $("#modalAddCarton").modal("hide");
     btn.prop('disabled', false);
@@ -330,6 +308,7 @@ function quitarCarton(IdCarton) {
             // refrescar la vista
             mostrarCartones();
             verCartonesBtn();
+            guardarEstadoLocal(); // <-- AGREGAR AQUÍ
             swal("Hecho", "✅ Cartón eliminado correctamente", "success");
 
         }
@@ -384,7 +363,7 @@ function cargarCartonesPrueba() {
         // Agregamos al arreglo global con el vendedor estático para pruebas
         cartones.push({
             id: datos.id,
-            vendedor: "Marco", // <--- Propiedad agregada
+            vendedor: "Abundia", // <--- Propiedad agregada
             numeros: estructura,
             marcados: [],
             ganador: false
@@ -395,6 +374,7 @@ function cargarCartonesPrueba() {
     // Refrescamos la vista
     mostrarCartones();
     verCartonesBtn();
+    guardarEstadoLocal();
 }
 
 // Esta función reemplaza a esFigura y maneja todos los casos
@@ -465,6 +445,7 @@ function verificarJugadas(cartones, numCantado) {
                 // nueva logica
                 cartonLlenoFigura.push({
                     id: carton.id,
+                    vendedor: carton.vendedor,
                     tipoGanador: "figura",
                     jugadas: regla.nombre,
                     reglaId: regla.id,          // <-- Guardamos el ID del checkbox
@@ -476,7 +457,7 @@ function verificarJugadas(cartones, numCantado) {
         });
 
         if (jugadasGanadas.length > 0) {
-            resultados.push({ id: carton.id, jugadas: jugadasGanadas });
+            resultados.push({ id: carton.id, vendedor: carton.vendedor, jugadas: jugadasGanadas });
         }
     });
 
@@ -514,11 +495,19 @@ function cantarNumeroTablero(col, num) {
         let totalMarcados = carton.marcados.filter(n => n !== null).length;
         if (totalMarcados >= 24) {
             carton.ganador = true; // marcamos como ganador
-            ganadoresBingo.push(carton.id);  // lo agregamos a la lista de ganadores
-            // nueva logica
+
+            // NUEVO: Guardamos como objeto para la alerta
+            ganadoresBingo.push({ 
+                id: carton.id, 
+                vendedor: carton.vendedor 
+            });
+
+            // lo agregamos a la lista de ganadores
+            //ganadoresBingo.push(carton.id);
             // Guardamos también el "numeroVictoria"
             cartonLlenoFigura.push({
                 id: carton.id,
+                vendedor: carton.vendedor,
                 tipoGanador: "lleno",
                 jugadas: "Cartón Lleno",
                 numeroVictoria: num
@@ -527,7 +516,6 @@ function cantarNumeroTablero(col, num) {
     });
 
     // 1. Obtenemos las figuras ganadas en este turno
-    // let ganadoresFiguras = verificarJugadas(cartones);
     let ganadoresFiguras = verificarJugadas(cartones, num);
 
     // 2. Evaluamos si hay ALGÚN tipo de ganador (Bingo o Figura)
@@ -536,14 +524,26 @@ function cantarNumeroTablero(col, num) {
 
         // Bloque para Cartón Lleno
         if (ganadoresBingo.length > 0) {
-            mensajeConsolidado += "🏆 ¡BINGO (Cartón Lleno)!\nGanadores: " + ganadoresBingo.join(", ") + "\n\n";
+            // Extraemos ID y Vendedor usando .map()
+            let ganadoresTexto = ganadoresBingo.map(g => {
+                let vend = g.vendedor ? ` (Vend: ${g.vendedor})` : "";
+                return `${g.id}${vend}`;
+            }).join(", ");
+            
+            mensajeConsolidado += "🏆 ¡BINGO (Cartón Lleno)!\nGanadores: " + ganadoresTexto + "\n\n";
         }
+
+        // if (ganadoresBingo.length > 0) {
+        //     mensajeConsolidado += "🏆 ¡BINGO (Cartón Lleno)!\nGanadores: " + ganadoresBingo.join(", ") + "\n\n";
+        // }
 
         // Bloque para Figuras
         if (ganadoresFiguras.length > 0) {
             mensajeConsolidado += "🎉 ¡Figuras Completadas!\n";
             ganadoresFiguras.forEach(r => {
-                mensajeConsolidado += `Cartón ${r.id} → ${r.jugadas.join(", ")}\n`;
+                let vend = r.vendedor ? ` (Vend: ${r.vendedor})` : "";
+                mensajeConsolidado += `Cartón ${r.id}${vend} → ${r.jugadas.join(", ")}\n`;
+                //mensajeConsolidado += `Cartón ${r.id} → ${r.jugadas.join(", ")}\n`;
             });
         }
 
@@ -553,6 +553,8 @@ function cantarNumeroTablero(col, num) {
     }
 
     mostrarCartones();
+    // Guardamos absolutamente todo el estado actual (Ganadores, Historial y Cartones Marcados)
+    guardarEstadoLocal();
 }
 
 function mostrarTodosGanadores() {
@@ -568,7 +570,8 @@ function mostrarTodosGanadores() {
                 <div class="d-flex align-items-center mb-2 bg-light p-2 rounded border">
                     <i class="fa fa-trophy fa-lg text-warning me-3 ms-1"></i>
                     <div class="lh-1">
-                        <span class="font-monospace small text-muted">Cod:</span> <b class="text-dark">${evento.id}</b>
+                        <span class="font-monospace small text-muted">Cod:</span> <b class="text-dark">${evento.id}</b><br>
+                        <small class="text-muted fw-bold">De: ${evento.vendedor}</small>
                     </div>
                 </div>`;
                 $("#contCartonesLlenos").append(eventoDiv);
@@ -579,7 +582,7 @@ function mostrarTodosGanadores() {
                     <i class="fa fa-star fa-lg text-theme me-3 ms-1"></i>
                     <div class="lh-1">
                         <span class="font-monospace small text-muted">Cod:</span> <b class="text-dark">${evento.id}</b><br>
-                        <small class="text-muted fw-bold">${evento.jugadas}</small>
+                        <small class="text-muted fw-bold">${evento.jugadas} - De: ${evento.vendedor}</small>
                     </div>
                 </div>`;
                 $("#contFigurasGanadas").append(eventoDiv);
@@ -649,6 +652,7 @@ function volverAtras() {
             });
 
             mostrarCartones();
+            guardarEstadoLocal(); // <-- AGREGAR AQUÍ
             swal("Hecho", `✅ Se deshizo el número ${col}-${num}.`, "success");
         }
     });
@@ -686,6 +690,7 @@ function reiniciarCarton() {
 
             // Actualizar la vista
             mostrarCartones();
+            guardarEstadoLocal(); // <-- AGREGAR AQUÍ
             swal("Mensaje", "🔄 Juego reiniciado. Puedes volver a jugar con los mismos cartones.", "warning");
         }
     });
@@ -695,14 +700,66 @@ $('#btnNuevoJuego').on('click', function () {
     reiniciarCarton();
 })
 
-// restricciones y navegacion de input del modal para cartones
+$("#btnFinalizarBingo").on("click", function () {
+    swal({
+        title: "¿Finalizar y Borrar Todo?",
+        text: "⚠️ Esta acción eliminará TODOS los cartones registrados, el historial de números y los ganadores. El sistema quedará en blanco. ¿Estás seguro?",
+        icon: "error",
+        buttons: ["Cancelar", "Sí, finalizar juego"],
+        dangerMode: true,
+    }).then((confirmado) => {
+        if (confirmado) {
+            // 1. Limpiamos solo las claves específicas de nuestro bingo
+            localStorage.removeItem("bingo_cartones");
+            localStorage.removeItem("bingo_historial");
+            localStorage.removeItem("bingo_ganadores");
+
+            // 2. Recargamos la página para restablecer todo a cero
+            location.reload();
+        }
+    });
+});
+
+// PERSISTENCIA DE DATOS (LOCALSTORAGE)
+
+function guardarEstadoLocal() {
+    localStorage.setItem("bingo_cartones", JSON.stringify(cartones));
+    localStorage.setItem("bingo_historial", JSON.stringify(historial));
+    localStorage.setItem("bingo_ganadores", JSON.stringify(cartonLlenoFigura));
+}
+
+function cargarEstadoLocal() {
+    let localCartones = localStorage.getItem("bingo_cartones");
+    let localHistorial = localStorage.getItem("bingo_historial");
+    let localGanadores = localStorage.getItem("bingo_ganadores");
+
+    if (localCartones) cartones = JSON.parse(localCartones);
+    if (localHistorial) historial = JSON.parse(localHistorial);
+    if (localGanadores) cartonLlenoFigura = JSON.parse(localGanadores);
+
+    // Si hay datos recuperados, reconstruimos la interfaz
+    if (cartones.length > 0 || historial.length > 0) {
+        mostrarCartones();
+        verCartonesBtn();
+        mostrarTodosGanadores();
+
+        // Re-pintar las bolas marcadas en el tablero maestro
+        historial.forEach(clave => {
+            let col = clave[0];
+            let num = clave.slice(1);
+            $(`#btn-bola-${col}-${num}`).addClass('cantada');
+        });
+        
+        console.log("Estado del juego restaurado desde localStorage.");
+    }
+}
+
 
 // NAVEGACIÓN ESTILO EXCEL PARA EL CARTÓN
 
 // 1. Restringir para que solo acepte números (reemplaza tu plugin propuesto de forma más directa)
 $(document).on("input", ".input-carton", function () {
     this.value = this.value.replace(/[^0-9]/g, '');
-    //console.log("Valor del Input:", this.value);
 });
 
 // 2. Lógica de navegación con flechas

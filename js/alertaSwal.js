@@ -65,7 +65,7 @@ function alertaTimer(titulo, mensaje, tipo, tiempo = 3000) {
     });
 }
 
-function mostrarAlertaZero(titulo, mensaje, tipo) {
+function mostrarAlerta(titulo, mensaje, tipo) {
 
     let btnClass = 'btn-default';
 

@@ -54,6 +54,7 @@ $(document).ready(function () {
         })
         .then(data => {
             catalogoFiguras = data;
+
             cargarFigurasEnModal();
             // Solo pintamos los checkboxes DESPUÉS de tener los datos
             cargarCheckboxesPantallaPrincipal();
