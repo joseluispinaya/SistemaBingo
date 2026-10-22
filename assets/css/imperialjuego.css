@@ -159,24 +159,13 @@
 /* ========================================================
    ESTILOS PARA EL CARTÓN MODO INPUT (MODAL)
    ======================================================== */
-   
-/* Ocultar flechas de los input type number */
-.input-carton::-webkit-outer-spin-button,
-.input-carton::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-.input-carton[type=number] {
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
 
 /* Modificamos padding del contenedor td para que el input ocupe todo el espacio */
 .carton-input-mode td {
     padding: 0 !important;
 }
 
-/* Estilo del input numérico */
+/* Estilo del input */
 .input-carton {
     width: 30px;
     height: 30px;

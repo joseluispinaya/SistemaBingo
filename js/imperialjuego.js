@@ -211,11 +211,13 @@ $('#btnRegistrarCarton').on("click", function () {
                 estructura[col].push(null); // Casilla de estrella libre
             } else {
                 let inputId = `inp_${col}${fila}`;
+                //console.log("Después de limpiar:", inputId);
                 let valStr = document.getElementById(inputId).value.trim();
                 
                 // 1. Validar que no esté vacío
                 if (valStr === "") {
-                    mostrarAlerta("Casilla Vacía", `Falta ingresar un número en la columna ${col}.`, "warning");
+                    //mostrarAlerta("Casilla Vacía", `Falta ingresar un número en la columna ${col}.`, "warning");
+                    MensajeToast("Alerta", `Falta ingresar un número en la columna ${col}.`, "warning");
                     document.getElementById(inputId).focus();
                     hayError = true;
                     break;
@@ -231,14 +233,16 @@ $('#btnRegistrarCarton').on("click", function () {
 
                 // 3. Validar rango
                 if (num < min || num > max) {
-                    mostrarAlerta("Fuera de Rango", `El número ${num} es inválido para la columna ${col}. Rango permitido: ${min}-${max}.`, "error");
+                    //mostrarAlerta("Fuera de Rango", `El número ${num} es inválido para la columna ${col}. Rango permitido: ${min}-${max}.`, "error");
+                    MensajeToast("Inválido", `El Número ${num} es inválido en la columna ${col}. Rango permitido: ${min}-${max}.`, "error");
                     document.getElementById(inputId).focus();
                     hayError = true; break;
                 }
 
                 // 4. Validar duplicados en el mismo cartón
                 if (numerosUnicos.has(num)) {
-                    mostrarAlerta("Número Repetido", `El número ${num} se encuentra duplicado en este cartón.`, "error");
+                    //mostrarAlerta("Número Repetido", `El número ${num} se encuentra duplicado en este cartón.`, "error");
+                    MensajeToast("Repetido", `El número ${num} se encuentra duplicado en este cartón.`, "error");
                     document.getElementById(inputId).focus();
                     hayError = true; break;
                 }
@@ -271,7 +275,8 @@ $('#btnRegistrarCarton').on("click", function () {
     
     $("#modalAddCarton").modal("hide");
     btn.prop('disabled', false);
-    mostrarAlerta("Éxito", "Cartón registrado correctamente.", "success");
+    MensajeToast("Éxito", "Cartón registrado correctamente.", "success");
+    //mostrarAlerta("Éxito", "Cartón registrado correctamente.", "success");
 });
 
 function mostrarCartones() {
@@ -689,3 +694,65 @@ function reiniciarCarton() {
 $('#btnNuevoJuego').on('click', function () {
     reiniciarCarton();
 })
+
+// restricciones y navegacion de input del modal para cartones
+
+// NAVEGACIÓN ESTILO EXCEL PARA EL CARTÓN
+
+// 1. Restringir para que solo acepte números (reemplaza tu plugin propuesto de forma más directa)
+$(document).on("input", ".input-carton", function () {
+    this.value = this.value.replace(/[^0-9]/g, '');
+    //console.log("Valor del Input:", this.value);
+});
+
+// 2. Lógica de navegación con flechas
+const arrayColumnas = ["B", "I", "N", "G", "O"];
+
+$(document).on("keydown", ".input-carton", function (e) {
+    // Obtenemos el ID actual, ej: "inp_B0"
+    let partesId = e.target.id.split('_'); 
+    if (partesId.length !== 2) return;
+    
+    let colActual = partesId[1].charAt(0); // "B"
+    let filaActual = parseInt(partesId[1].charAt(1)); // 0
+    
+    let indexCol = arrayColumnas.indexOf(colActual);
+    let proxFila = filaActual;
+    let proxIndexCol = indexCol;
+
+    // Detectar qué flecha se presionó
+    if (e.key === "ArrowUp") {
+        proxFila--;
+        e.preventDefault(); // Evita que el cursor se mueva al inicio del texto
+    } else if (e.key === "ArrowDown") {
+        proxFila++;
+        e.preventDefault();
+    } else if (e.key === "ArrowLeft") {
+        proxIndexCol--;
+        e.preventDefault();
+    } else if (e.key === "ArrowRight") {
+        proxIndexCol++;
+        e.preventDefault();
+    } else {
+        return; // Si no es flecha, dejamos que escriba normal
+    }
+
+    // Saltar la casilla de la estrella (N2)
+    if (arrayColumnas[proxIndexCol] === "N" && proxFila === 2) {
+        if (e.key === "ArrowUp") proxFila--;
+        else if (e.key === "ArrowDown") proxFila++;
+        else if (e.key === "ArrowLeft") proxIndexCol--;
+        else if (e.key === "ArrowRight") proxIndexCol++;
+    }
+
+    // Verificar que no nos salgamos de los bordes del cartón (0 a 4)
+    if (proxFila >= 0 && proxFila <= 4 && proxIndexCol >= 0 && proxIndexCol <= 4) {
+        let idDestino = `inp_${arrayColumnas[proxIndexCol]}${proxFila}`;
+        let inputDestino = document.getElementById(idDestino);
+        
+        if (inputDestino) {
+            inputDestino.focus();
+            inputDestino.select(); // Selecciona el texto para sobrescribir rápidamente
+        }
+    }
+});
